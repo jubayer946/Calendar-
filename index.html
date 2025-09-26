@@ -424,10 +424,8 @@
             
             monthYear.textContent = `${months[month]} ${year}`;
             
-            // Clear calendar
             calendar.innerHTML = '';
             
-            // Add day headers
             days.forEach(day => {
                 const dayHeader = document.createElement('div');
                 dayHeader.className = 'day-header';
@@ -435,7 +433,6 @@
                 calendar.appendChild(dayHeader);
             });
             
-            // Get first day of month and number of days
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const daysInPrevMonth = new Date(year, month, 0).getDate();
@@ -444,7 +441,6 @@
             const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
             const todayDate = today.getDate();
             
-            // Add previous month's trailing days
             for (let i = firstDay - 1; i >= 0; i--) {
                 const dayCell = document.createElement('div');
                 dayCell.className = 'day-cell';
@@ -452,7 +448,6 @@
                 calendar.appendChild(dayCell);
             }
             
-            // Add current month's days
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayCell = document.createElement('div');
                 dayCell.className = 'day-cell';
@@ -466,7 +461,6 @@
                 dayNumber.textContent = day;
                 dayCell.appendChild(dayNumber);
                 
-                // Add events for this day (only event names)
                 const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 if (events[dateKey]) {
                     events[dateKey].forEach((event, eventIndex) => {
@@ -484,9 +478,8 @@
                 calendar.appendChild(dayCell);
             }
             
-            // Add next month's leading days
-            const totalCells = calendar.children.length - 7; // Subtract day headers
-            const remainingCells = 42 - totalCells; // 6 rows × 7 days = 42 cells
+            const totalCells = calendar.children.length - 7; 
+            const remainingCells = 42 - totalCells; 
             
             for (let day = 1; day <= remainingCells; day++) {
                 const dayCell = document.createElement('div');
@@ -495,7 +488,6 @@
                 calendar.appendChild(dayCell);
             }
             
-            // Update event slider
             updateEventSlider();
         }
 
@@ -503,7 +495,6 @@
             const eventList = document.getElementById('eventList');
             eventList.innerHTML = '';
             
-            // Get all events and sort by date
             const allEvents = [];
             Object.keys(events).forEach(dateKey => {
                 events[dateKey].forEach((event, eventIndex) => {
@@ -516,7 +507,6 @@
                 });
             });
             
-            // Sort events by date
             allEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
             
             if (allEvents.length === 0) {
@@ -524,7 +514,6 @@
                 return;
             }
             
-            // Display events
             allEvents.forEach((event, index) => {
                 const eventItem = document.createElement('div');
                 eventItem.className = 'event-item';
@@ -547,7 +536,6 @@
                     ${event.details ? `<div class="event-item-details">${event.details}</div>` : ''}
                 `;
                 
-                // Add click handler to navigate to event's month
                 eventItem.onclick = () => {
                     navigateToEventMonth(event.date);
                 };
@@ -557,25 +545,21 @@
         }
 
         function highlightEventInSlider(dateKey, eventIndex) {
-            // Remove previous highlights
             document.querySelectorAll('.event-item.highlighted').forEach(item => {
                 item.classList.remove('highlighted');
             });
             
-            // Find and highlight the matching event in slider
             const eventItems = document.querySelectorAll('.event-item');
             eventItems.forEach(item => {
                 if (item.getAttribute('data-date') === dateKey && 
                     parseInt(item.getAttribute('data-index')) === eventIndex) {
                     item.classList.add('highlighted');
                     
-                    // Scroll to the highlighted event
                     const slider = document.querySelector('.event-slider');
                     const itemTop = item.offsetTop;
                     const sliderHeight = slider.clientHeight;
                     const itemHeight = item.offsetHeight;
                     
-                    // Calculate scroll position to center the item
                     const scrollPosition = itemTop - (sliderHeight / 2) + (itemHeight / 2);
                     
                     slider.scrollTo({
@@ -594,7 +578,6 @@
         function navigateToEventMonth(dateKey) {
             const [year, month, day] = dateKey.split('-').map(Number);
             
-            // Only navigate if we're not already in that month
             if (currentDate.getFullYear() !== year || currentDate.getMonth() !== (month - 1)) {
                 currentDate = new Date(year, month - 1, 1);
                 generateCalendar();
@@ -627,15 +610,12 @@
                 details: details
             });
             
-            // Clear form
             document.getElementById('eventDate').value = '';
             document.getElementById('eventName').value = '';
             document.getElementById('eventDetails').value = '';
             
-            // Close the form after adding event
             toggleEventForm();
             
-            // Navigate to the event's month if needed
             const [eventYear, eventMonth, eventDay] = date.split('-').map(Number);
             
             if (currentDate.getFullYear() !== eventYear || currentDate.getMonth() !== (eventMonth - 1)) {
@@ -645,11 +625,17 @@
             generateCalendar();
         }
 
-        // Set today's date as default in the date input
         document.getElementById('eventDate').valueAsDate = new Date();
 
-        // Initialize calendar
+        // 👉 Preload event for 2023-09-27
+        events["2023-09-27"] = [
+            {
+                name: "First Talked",
+                details: "The day the conversation began ✨"
+            }
+        ];
+
         generateCalendar();
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'984bd73da5d7ba53',t:'MTc1ODgxNzE0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
+</body>
+    </html>
